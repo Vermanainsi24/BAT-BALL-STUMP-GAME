@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GAME</title>
+    <style>
+      body{
+        margin:0;
+        padding:0;
+      }
+         main{
+          height:100vh;
+          width:100vw;
+          margin:0;
+          padding:0;
+          background-color: bisque;
+         }
+        img{
+          height:100px;
+          width:100px;
+
+        }
+
+       #title{
+          text-align: center;
+          text-shadow: 2px 2px 4px rgb(72, 72, 186);
+          font-weight: bolder; 
+          font-size: 70px;
+          color:rgb(17, 17, 222);
+        }
+       .all{
+                display: flex;
+               /* border:2px solid red;*/}
+
+        button{
+            height:200px;
+            width: 200px;
+            color:black;
+            background-color: rgb(17, 255, 0);
+            border:5px solid black;
+            border-radius: 100px;
+            margin:10px 5px;
+            margin-left:200px;
+            margin-top:20px;
+            align-items: center;
+            cursor: pointer;
+            
+
+          }
+          button:hover.stars{
+            display:block;
+            filter:drop-shadow(0 0 10px #fffdef);
+            /*transform: scale(1.1);*/
+
+          }
+
+        .result
+        {  border:2px solid black;
+            background-color: rgb(227, 37, 37);
+            border-radius:20px;
+            padding:5px 5px;
+            margin:5px 5px;
+            color:white;
+            text-align: center;
+            font-family:'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+        }
+        #reset{
+          border:2px solid black;
+          height:50px;
+          width:150px;
+          border-radius:10px;
+          background-color: black;
+          color:white;
+          margin-left: 500px;
+          margin-top: 20px;
+        }
+
+    </style>
+</head>
+<body>
+<main>
+     <h1 id="title">
+       BAT BALL STUMP GAME!
+    </h1>   
+     <DIV class="all">
+      
+    <button onclick="
+    let computerchoice=getcomputerchoice();
+    let result =getResult('Bat',computerchoice);
+    showResult(computerchoice,'Bat',result);
+    "><img src="cricket-bat.png"></button>
+
+   <button onclick="
+   let computerchoice=getcomputerchoice();
+   let result =getResult('Ball',computerchoice);
+   showResult(computerchoice,'Ball',result);
+   "><img src="cricket.png"></button>
+    
+    <button onclick="
+    let computerchoice=getcomputerchoice();
+    let result =getResult('Stump',computerchoice);
+    showResult(computerchoice,'Stump',result);
+    "><img src="wicket.png"></button>
+    
+    
+
+</DIV>
+
+<div class="result">
+  <h2 id="usermove"></h2>
+  <h2 id="computermove"></h2>
+  <h2 id="result"></h2>
+  <h2 id="score"></h2>
+</div>
+
+<button id="reset" onclick="localStorage.clear()
+    resetScore();
+    showResult();
+    ">RESET</button>
+</main>
+</body>
+
+
+
+<script>
+    let score;
+    let scorestr=localStorage.getItem('SCORE');
+    resetScore(scorestr);
+
+    function resetScore(scorestr)
+    {
+    score=scorestr?JSON.parse(scorestr):{
+      win:0,
+      loss:0,
+      tie:0, };
+     
+      score.displayScore = function(){
+      return `WIN: ${score.win} |  LOSS: ${score.loss}  |  Tie:  ${score.tie}`;
+
+    };
+
+    
+    }
+    
+    // if(scorestr!==undefined)
+    // {
+    //     score=JSON.parse(scorestr);
+    // }
+    // else{
+    //  score= {
+    //           win:0,
+    //           loss:0,
+    //           tie:0,
+    //   };
+
+    
+    
+   
+  function getcomputerchoice()
+   {
+    let randomN=Math.random()*3;
+    let computerchoice;
+    if(randomN>0 && randomN<=1)
+       {
+         computerchoice='Bat';
+       }
+    else if(randomN>1 && randomN<=2)
+        {
+           computerchoice='Ball';
+        }
+    else 
+        {
+           computerchoice='Stump';
+        }
+        return computerchoice;
+   }
+
+   function getResult(userchoice,computerchoice)
+
+   {
+     console.log(computerchoice);
+    if(userchoice==='Bat')
+    {
+        if(computerchoice==='Bat')
+       { 
+          score.tie++;
+          return `It's a Tie`;
+       }
+        else if(computerchoice==='Ball')
+       {  
+          score.win++;
+         return `User Won!!HURRAY!!😁`;
+       }
+       else
+       {  
+          score.loss++;
+         return `Computer Won!!😒`;
+         
+        
+       }
+    }
+    else if(userchoice==='Ball')
+    {
+        if(computerchoice==='Bat')
+       { 
+         score.win++;
+         return `User Won!! HURRAY!!`;
+       }
+      else if(computerchoice==='Ball')
+       { 
+         score.tie++;
+         return `It's a Tie`;
+       }
+        else
+        {  
+            score.loss++;
+         return `Computer Won!!`;
+        
+        }
+    }
+   else if(userchoice==='Stump')
+    {  
+        if(computerchoice==='Bat')
+        { 
+          score.win++;
+          return `User Won!!HURRAY!!`;
+        }
+       else if(computerchoice==='Ball')
+        { 
+            score.loss++;
+            return `Computer Won!!`;
+        }
+       else if(computerchoice==='Stump')
+        {  
+            score.tie++;
+            return `It's a Tie`;
+            
+        }
+
+    }
+ }
+   
+  function showResult(computerchoice,userchoice,result)
+   {  
+      
+    localStorage.setItem('SCORE',JSON.stringify(score));
+      document.querySelector('#usermove').innerText=userchoice!==undefined ?`YOU HAVE CHOOSEN -> ${userchoice} `:'';
+document.querySelector('#computermove').innerText=userchoice!==undefined ?`COMPUTER HAS CHOOSEN ->${computerchoice}`:'';
+      document.querySelector('#result').innerText=userchoice!==undefined ?`RESULT IS -> ${result}`:'';
+      document.querySelector('#score').innerText=`${score.displayScore()}`;
+    //  document.querySelector('#s').innerText=`${score.displayScore()}`;
+
+    }
+
+</script>
+</html>
